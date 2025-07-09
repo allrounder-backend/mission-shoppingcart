@@ -8,8 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import mission.ui.InputView;
-import mission.ui.validate.InputError;
-import mission.ui.validate.InvalidInputException;
+import mission.ui.exception.InputError;
+import mission.ui.exception.InvalidInputException;
 
 public class ConsoleInputView implements InputView {
 

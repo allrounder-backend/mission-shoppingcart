@@ -3,6 +3,8 @@ package mission.ui.validate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import mission.ui.exception.InputError;
+import mission.ui.exception.InvalidInputException;
 
 public class InputValidator {
     public static void validateNotEmpty(List<Integer> ids) {

@@ -1,4 +1,4 @@
-package mission.ui.validate;
+package mission.ui.exception;
 
 public class InvalidInputException extends IllegalArgumentException {
     private final InputError error;
