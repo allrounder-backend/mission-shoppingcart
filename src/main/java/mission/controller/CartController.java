@@ -8,7 +8,7 @@ import mission.domain.lecture.LectureRepository;
 import mission.ui.InputView;
 import mission.ui.OutputView;
 
-public class CartController {
+public class CartController implements Controller {
     private final LectureRepository lectureRepository;
     private final InputView inputView;
     private final OutputView outputView;

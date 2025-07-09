@@ -4,6 +4,8 @@ import mission.controller.CartController;
 import mission.domain.lecture.LectureRepository;
 import mission.ui.InputView;
 import mission.ui.OutputView;
+import mission.ui.implement.ConsoleInputView;
+import mission.ui.implement.ConsoleOutputView;
 
 public class AppConfig {
     public CartController cartController() {
@@ -19,10 +21,10 @@ public class AppConfig {
     }
 
     public InputView inputView() {
-        return new InputView();
+        return new ConsoleInputView();
     }
 
     public OutputView outputView() {
-        return new OutputView();
+        return new ConsoleOutputView();
     }
 }
