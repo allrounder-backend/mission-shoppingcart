@@ -1,5 +1,7 @@
 package mission.domain.lecture;
 
+import static mission.domain.lecture.validate.LectureValidator.validateAllFound;
+
 import java.util.*;
 
 public class LectureRepository {
@@ -28,9 +30,8 @@ public class LectureRepository {
         List<Lecture> found = lectures.stream()
                 .filter(l -> ids.contains(l.id()))
                 .toList();
-        if (found.size() != ids.size()) {
-            throw new IllegalArgumentException("강의 목록에 없는 강의가 입력됨.");
-        }
+
+        validateAllFound(ids, found);
         return found;
     }
 }
