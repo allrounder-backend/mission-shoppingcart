@@ -2,7 +2,6 @@ package mission;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import api.Application;
 import api.TestEnvironment;
 import java.util.List;
 import org.junit.jupiter.api.Test;

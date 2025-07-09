@@ -1,9 +1,10 @@
 package mission;
 
-import api.Console;
+import mission.controller.CartController;
 
 public class Application {
     public static void main(String[] args) {
-        //TODO: 미션 구현
+        CartController controller = new CartController();
+        controller.run();
     }
 }
