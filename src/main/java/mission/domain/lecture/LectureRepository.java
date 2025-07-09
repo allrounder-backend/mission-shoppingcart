@@ -1,8 +1,9 @@
 package mission.domain.lecture;
 
-import static mission.domain.lecture.validate.LectureValidator.validateAllFound;
-
 import java.util.*;
+import mission.common.validate.Validator;
+import mission.domain.lecture.exception.lecture.LectureError;
+import mission.domain.lecture.validate.LectureValidator;
 
 public class LectureRepository {
 
@@ -27,11 +28,13 @@ public class LectureRepository {
     );
 
     public List<Lecture> findByIds(List<Integer> ids) {
+        Validator.notNull(ids, LectureError.NULL_LECTURE_ID_LIST.getMessage());
+
         List<Lecture> found = lectures.stream()
                 .filter(l -> ids.contains(l.id()))
                 .toList();
 
-        validateAllFound(ids, found);
+        LectureValidator.validateAllFound(ids, found);
         return found;
     }
 }

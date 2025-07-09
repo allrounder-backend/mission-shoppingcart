@@ -1,5 +1,6 @@
 package mission.domain.lecture;
 
+import mission.common.validate.Validator;
 import mission.domain.lecture.exception.type.InvalidLectureTypeException;
 import mission.domain.lecture.exception.type.LectureTypeError;
 
@@ -7,9 +8,8 @@ public enum LectureType {
     DEVOPS, DBMS, LANG, FW, CS;
 
     public static LectureType from(String name) {
-        if (name == null) {
-            throw new InvalidLectureTypeException(LectureTypeError.TYPE_IS_NULL);
-        }
+        name = Validator.notNull(name, LectureTypeError.TYPE_IS_NULL.getMessage());
+
         return switch (name.toLowerCase()) {
             case "devops" -> DEVOPS;
             case "dbms" -> DBMS;

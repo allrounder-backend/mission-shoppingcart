@@ -8,7 +8,7 @@ import mission.domain.lecture.exception.lecture.LectureNotFoundException;
 public class LectureValidator {
     public static void validateAllFound(List<Integer> requested, List<Lecture> found) {
         if (requested.size() != found.size()) {
-            throw new LectureNotFoundException(LectureError.LECTURE_NOT_FOUND);
+            throw new LectureNotFoundException(LectureError.NULL_LECTURE_ID_LIST);
         }
     }
 }

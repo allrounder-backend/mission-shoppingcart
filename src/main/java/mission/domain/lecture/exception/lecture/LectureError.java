@@ -1,6 +1,7 @@
 package mission.domain.lecture.exception.lecture;
 
 public enum LectureError {
+    NULL_LECTURE_ID_LIST("강의 ID 리스트가 null입니다."),
     LECTURE_NOT_FOUND("존재하지 않는 강의가 포함되어 있습니다.");
 
     private final String message;
