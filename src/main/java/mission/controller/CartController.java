@@ -13,10 +13,10 @@ public class CartController {
     private final InputView inputView;
     private final OutputView outputView;
 
-    public CartController() {
-        this.lectureRepository = new LectureRepository();
-        this.inputView = new InputView();
-        this.outputView = new OutputView();
+    public CartController(LectureRepository lectureRepository, InputView inputView, OutputView outputView) {
+        this.lectureRepository = lectureRepository;
+        this.inputView = inputView;
+        this.outputView = outputView;
     }
 
     public void run() {

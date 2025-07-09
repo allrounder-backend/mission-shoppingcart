@@ -4,7 +4,8 @@ import mission.controller.CartController;
 
 public class Application {
     public static void main(String[] args) {
-        CartController controller = new CartController();
+        AppConfig config = new AppConfig();
+        CartController controller = config.cartController();
         controller.run();
     }
 }
