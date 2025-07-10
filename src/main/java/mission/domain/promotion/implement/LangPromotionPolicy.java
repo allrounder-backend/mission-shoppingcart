@@ -1,8 +1,9 @@
-package mission.domain.promotion;
+package mission.domain.promotion.implement;
 
 import java.util.Comparator;
 import java.util.List;
 import mission.domain.lecture.Lecture;
+import mission.domain.promotion.PromotionPolicy;
 
 public class LangPromotionPolicy implements PromotionPolicy {
     @Override
