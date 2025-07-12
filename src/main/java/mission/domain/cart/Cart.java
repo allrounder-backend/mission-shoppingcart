@@ -4,8 +4,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import mission.domain.lecture.Lecture;
 import mission.domain.lecture.LectureType;
-import mission.domain.promotion.PromotionPolicy;
-import mission.domain.promotion.PromotionPolicyFactory;
 
 public record Cart(List<Lecture> lectures) {
 
@@ -13,11 +11,9 @@ public record Cart(List<Lecture> lectures) {
         Map<LectureType, List<Lecture>> grouped = lectures.stream()
                 .collect(Collectors.groupingBy(Lecture::type));
 
-        return grouped.entrySet().stream()
-                .mapToInt(entry -> {
-                    PromotionPolicy policy = PromotionPolicyFactory.getPolicy(entry.getKey());
-                    return policy.apply(entry.getValue());
-                })
+        return grouped.values().stream()
+                .flatMap(Collection::stream)
+                .mapToInt(Lecture::price)
                 .sum();
     }
 
