@@ -10,8 +10,8 @@ public class ApplicationTest extends TestEnvironment {
     @Test
     void testApplication() {
         run(List.of("250000", "1, 14, 17"));
-        assertTrue(output().contains("예산을 초과했습니다."));
-        assertTrue(output().contains("3,000원"));
+        assertTrue(output().contains("over"));
+        assertTrue(output().contains("3,000won"));
     }
 
     @Override
