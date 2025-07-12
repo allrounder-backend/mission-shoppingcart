@@ -1,62 +1,152 @@
 package mission;
 
 import api.Console;
-import java.util.Scanner;
 
 class Basket {
-    private final int PROMOTION_RATIO_DEVOPS = 10;
-    private final int PROMOTION_VALUE_DBMS = 5_000;
-    private final int PROMOTION_VALUE_LANG = 0;
-    private final int PROMOTION_VALUE_FW = 30_000;
-    private final int PROMOTION_RATIO_CS = 30;
-
-    private int budget;
-    private int price;
-    // 배열은 final 키워드를 사용하여 불변성을 보장합니다.
+    private final int[] budget;
+    private final int[] price;
     private final Lecture[][] lectures;
 
     Basket(int budget) {
-        this.budget = budget;
-        this.price = 0;
-        // 5개의 유형에 대한 강의를 저장하기 위한 2차원 배열을 초기화합니다.
+        this.budget = new int[6];
+        this.price = new int[6];
         this.lectures = new Lecture[5][];
+        this.budget[0] = budget;
         this.lectures[0] = new Lecture[3]; // DevOps
-        this.lectures[1] = new Lecture[3]; // DMBS
+        this.lectures[1] = new Lecture[3]; // DBMS
         this.lectures[2] = new Lecture[3]; // Lang
         this.lectures[3] = new Lecture[4]; // F/W
         this.lectures[4] = new Lecture[4]; // CS
     }
 
-    public void categorize(String[] id) {
-        for (String s : id) {
-            // TODO: 강의 ID로 Lecture enum을 찾습니다.
-            Lecture l = Lecture.valueOf("LEC" + s);
-            int lectureIndex = switch(l.getCategory()) {
-                case "DevOps" -> 0;
-                case "DBMS" -> 1;
-                case "Lang" -> 2;
-                case "F/W" -> 3;
-                case "CS" -> 4;
-                // switch는 모든 경우를 처리해야 하므로, default 케이스를 추가합니다.
-                default -> throw new IllegalStateException("[오류] 알 수 없는 유형: " + l.getCategory());
-            };
-            // 강의를 추가합니다.
-            for (int i = 0; i < lectures[lectureIndex].length; i++) {
-                if (lectures[lectureIndex][i] == null) {
-                    lectures[lectureIndex][i] = l;
-                    break;
-                }
+    public void setBudget(String[] budgets) {
+        for (String budget : budgets) {
+            String[] s = budget.split("-");
+            switch (s[0]) {
+                case "DevOps" -> this.budget[1] = Integer.parseInt(s[1]);
+                case "DBMS" -> this.budget[2] = Integer.parseInt(s[1]);
+                case "Lang" -> this.budget[3] = Integer.parseInt(s[1]);
+                case "F/W" -> this.budget[4] = Integer.parseInt(s[1]);
+                case "CS" -> this.budget[5] = Integer.parseInt(s[1]);
+                default -> throw new IllegalArgumentException("잘못된 카테고리: " + s[0]);
             }
         }
+    }
+
+    public void categorize(String[] id) {
+        for (String s : id) {
+            try {
+                s = s.trim();
+                // 강의 ID로 Lecture enum을 찾습니다.
+                for (Lecture l : Lecture.values()) {
+                    if (l.getId().equals(s)) {
+                        int lectureIndex = l.getCategory();
+                        // 강의를 추가합니다.
+                        for (int i = 0; i < lectures[lectureIndex].length; i++) {
+                            if (lectures[lectureIndex][i] == null) {
+                                lectures[lectureIndex][i] = l;
+                                break;
+                            }
+                        }
+                    }
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println("[오류] 잘못된 강의 ID: " + s);
+            }
+        }
+    }
+
+    public void getPromotion(int categoryIndex) {
+        switch (categoryIndex) {
+            case 0 -> { // DevOps
+                for (Lecture l : lectures[0]) {
+                    if (l != null) price[1] += (int) (l.getPrice() * 0.9);
+                }
+            }
+            case 1 -> { // DBMS
+                for (Lecture l : lectures[1]) {
+                    if (l != null) price[2] += (l.getPrice() - 5000);
+                }
+            }
+            case 2 -> { // Lang
+                int cnt = 0;
+                for (Lecture l : lectures[2]) {
+                    // 2개 이상 구매 시 가장 저렴한 강의 하나 무료
+                    if (l != null) cnt++;
+                    if (cnt >= 2) {
+                        // TODO: 요소의 수가 적으므로 간단한 반복문으로 처리합니다.
+                        Lecture temp = null;
+                    }
+                }
+            }
+            case 3 -> { // F/W
+                int temp = 0;
+                for (Lecture l : lectures[3]) {
+                    if (l != null) temp += l.getPrice();
+                }
+                price[4] += (temp >= 90000) ? (temp - 30000) : temp;
+            }
+            case 4 -> { // CS
+                int temp = 0; int cnt = 0;
+                for (Lecture l : lectures[4]) {
+                    if (l != null) {
+                        temp += l.getPrice();
+                        cnt++;
+                    }
+                }
+                price[5] += (cnt >= 3) ? (int) (temp * 0.7) : temp;
+            }
+        }
+    }
+
+    public int getBudget(int categoryIndex) {
+        return budget[categoryIndex];
+    }
+
+    public int getPrice(int categoryIndex) {
+        return price[categoryIndex];
+    }
+
+    public void setTotalPrice() {
+        int total = 0;
+        for (int i : price) total += i;
+        price[0] = total;
+    }
+
+    public boolean isNotNull(int categoryIndex) {
+        if (categoryIndex == 0) return true;
+        else return lectures[categoryIndex - 1][0] != null;
     }
 }
 
 public class Application {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
         System.out.println("총 예산을 입력해 주세요.");
-        Basket basket = new Basket(scanner.nextInt());
+        Basket basket = new Basket(Integer.parseInt(Console.readLine()));
+        System.out.println("유형 별 예산을 입력해 주세요.");
+        basket.setBudget(Console.readLine().split(","));
         System.out.println("구입할 강의 목록을 입력해주세요.");
-        basket.categorize(scanner.next().split(", "));
-    }ㅣ
+        // FIXME: ", "로 할 경우 split이 제대로 작동하지 않음...
+        basket.categorize(Console.readLine().split(","));
+        for (int i = 0; i < 5; basket.getPromotion(i++));
+        basket.setTotalPrice();
+        int[] temp = new int[6];
+        boolean isOverBudget = false;
+        for (int i = 0; i < 6; i++) {
+            temp[i] = basket.getPrice(i) - basket.getBudget(i);
+            if (temp[i] > 0) isOverBudget = true;
+        }
+        String[] category = {"총 예산", "DevOps", "DBMS", "Lang", "F/W", "CS"};
+        if (isOverBudget) {
+            System.out.println("예산을 초과했습니다.");
+            for (int i = 0; i < 6; i++) {
+                if (basket.isNotNull(i)) {
+                    System.out.print("- " + category[i] + " : ");
+                    System.out.printf(temp[i] > 0 ? "%,d원 초과\n" : "OK\n", temp[i]);
+                }
+            }
+        } else {
+            System.out.println("예산 내에 구매할 수 있습니다.");
+        }
+    }
 }
