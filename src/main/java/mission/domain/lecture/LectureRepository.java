@@ -29,6 +29,7 @@ public class LectureRepository {
 
     public List<Lecture> findByIds(List<Integer> ids) {
         Validator.notNull(ids, LectureError.NULL_LECTURE_ID_LIST.getMessage());
+        Validator.notEmpty(ids, LectureError.EMPTY_LIST.getMessage());
 
         List<Lecture> found = lectures.stream()
                 .filter(l -> ids.contains(l.id()))

@@ -16,7 +16,7 @@ public class ConsoleInputView implements InputView {
     public int inputTotalBudget() {
         System.out.println("총 예산을 입력해 주세요.");
         try {
-            String input = Validator.notNull(Console.readLine(), InputError.NULL_INPUT.getMessage()).trim();
+            String input = Validator.notBlank(Console.readLine(), InputError.NULL_INPUT.getMessage()).trim();
             return Integer.parseInt(input);
         } catch (NumberFormatException e) {
             throw new InvalidInputException(InputError.INVALID_BUDGET);
@@ -26,7 +26,7 @@ public class ConsoleInputView implements InputView {
     @Override
     public List<Integer> inputLectureIds() {
         System.out.println("구입할 강의 목록을 입력해주세요.");
-        String input = Validator.notNull(Console.readLine(), InputError.NULL_INPUT.getMessage()).trim();
+        String input = Validator.notBlank(Console.readLine(), InputError.NULL_INPUT.getMessage()).trim();
         try {
             List<Integer> ids = Arrays.stream(input.split(","))
                     .map(String::trim)

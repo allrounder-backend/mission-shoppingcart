@@ -8,7 +8,7 @@ public enum LectureType {
     DEVOPS, DBMS, LANG, FW, CS;
 
     public static LectureType from(String name) {
-        name = Validator.notNull(name, LectureTypeError.TYPE_IS_NULL.getMessage());
+        name = Validator.notBlank(name, LectureTypeError.TYPE_IS_NULL.getMessage());
 
         return switch (name.toLowerCase()) {
             case "devops" -> DEVOPS;
