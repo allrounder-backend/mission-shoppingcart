@@ -1,11 +1,9 @@
 package mission.domain.cart;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import mission.domain.cart.exception.BudgetOverTotalException;
 import mission.domain.cart.exception.DuplicateBudgetTypeException;
 import mission.domain.cart.exception.InvalidBudgetFormatException;
@@ -26,7 +24,7 @@ public class BudgetPerType {
         Map<LectureType, Integer> result = new HashMap<>();
 
         for (String part : input.split(",")) {
-            String[] arr = part.split("-");
+            String[] arr = part.split("-", 2);
             if (arr.length != 2) {
                 throw new InvalidBudgetFormatException();
             }
