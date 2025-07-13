@@ -26,7 +26,7 @@ public class CartController implements Controller {
             int budgetValue = inputView.inputTotalBudget();
             CartBudget cartBudget = new CartBudget(budgetValue);
 
-            BudgetPerType budgetPerType = new BudgetPerType(inputView.inputTypeBudgets());
+            BudgetPerType budgetPerType = new BudgetPerType(inputView.inputTypeBudgets(), budgetValue);
 
             List<Integer> lectureIds = inputView.inputLectureIds();
 

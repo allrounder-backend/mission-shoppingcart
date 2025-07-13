@@ -1,27 +1,59 @@
 package mission.domain.cart;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import mission.domain.cart.exception.BudgetOverTotalException;
+import mission.domain.cart.exception.DuplicateBudgetTypeException;
+import mission.domain.cart.exception.InvalidBudgetFormatException;
+import mission.domain.cart.exception.NegativeBudgetException;
 import mission.domain.lecture.LectureType;
 
 public class BudgetPerType {
     private final Map<LectureType, Integer> map;
 
-    public BudgetPerType(String input) {
+    public BudgetPerType(String input, int totalBudget) {
         this.map = parse(input);
+        validateTotalUnderLimit(totalBudget);
     }
 
     private Map<LectureType, Integer> parse(String input) {
         if (input == null || input.isBlank()) return Map.of();
-        return Arrays.stream(input.split(","))
-                .map(s -> s.split("-"))
-                .collect(Collectors.toMap(
-                        arr -> LectureType.from(arr[0]),
-                        arr -> Integer.parseInt(arr[1])
-                ));
+
+        Map<LectureType, Integer> result = new HashMap<>();
+
+        for (String part : input.split(",")) {
+            String[] arr = part.split("-");
+            if (arr.length != 2) {
+                throw new InvalidBudgetFormatException();
+            }
+
+            LectureType type = LectureType.from(arr[0]);
+            int value;
+
+            try {
+                value = Integer.parseInt(arr[1]);
+            } catch (NumberFormatException e) {
+                throw new InvalidBudgetFormatException();
+            }
+
+            if (value < 0) throw new NegativeBudgetException();
+            if (result.containsKey(type)) throw new DuplicateBudgetTypeException();
+
+            result.put(type, value);
+        }
+
+        return result;
+    }
+
+    private void validateTotalUnderLimit(int totalBudget) {
+        int typeSum = map.values().stream().mapToInt(Integer::intValue).sum();
+        if (typeSum > totalBudget) {
+            throw new BudgetOverTotalException();
+        }
     }
 
     public Optional<Integer> get(LectureType type) {
