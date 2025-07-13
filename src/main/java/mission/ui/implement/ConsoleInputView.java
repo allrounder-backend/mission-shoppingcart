@@ -24,6 +24,12 @@ public class ConsoleInputView implements InputView {
     }
 
     @Override
+    public String inputTypeBudgets() {
+        System.out.println("유형별 예산을 입력해 주세요.");
+        return Validator.notBlank(Console.readLine(), InputError.NULL_INPUT.getMessage()).trim();
+    }
+
+    @Override
     public List<Integer> inputLectureIds() {
         System.out.println("구입할 강의 목록을 입력해주세요.");
         String input = Validator.notBlank(Console.readLine(), InputError.NULL_INPUT.getMessage()).trim();

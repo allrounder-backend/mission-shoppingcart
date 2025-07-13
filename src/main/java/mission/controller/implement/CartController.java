@@ -5,6 +5,7 @@ import mission.controller.Controller;
 import mission.domain.cart.CartBudget;
 import mission.domain.cart.CartResultDto;
 import mission.domain.cart.CartService;
+import mission.domain.cart.BudgetPerType;
 import mission.ui.InputView;
 import mission.ui.OutputView;
 
@@ -24,12 +25,15 @@ public class CartController implements Controller {
         try {
             int budgetValue = inputView.inputTotalBudget();
             CartBudget cartBudget = new CartBudget(budgetValue);
+
+            BudgetPerType budgetPerType = new BudgetPerType(inputView.inputTypeBudgets());
+
             List<Integer> lectureIds = inputView.inputLectureIds();
 
-            CartResultDto result = cartService.processCart(cartBudget, lectureIds);
+            CartResultDto result = cartService.processCart(cartBudget, budgetPerType, lectureIds);
 
             if (result.isOverBudget()) {
-                outputView.printOverBudget(result.excessAmount());
+                outputView.printOverBudget(result);
             } else {
                 outputView.printWithinBudget();
             }

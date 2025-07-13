@@ -5,7 +5,21 @@ import mission.domain.lecture.exception.type.InvalidLectureTypeException;
 import mission.domain.lecture.exception.type.LectureTypeError;
 
 public enum LectureType {
-    DEVOPS, DBMS, LANG, FW, CS;
+    DEVOPS("DevOps"),
+    DBMS("DBMS"),
+    LANG("Lang"),
+    FW("F/W"),
+    CS("CS");
+
+    private final String displayName;
+
+    LectureType(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String displayName() {
+        return displayName;
+    }
 
     public static LectureType from(String name) {
         name = Validator.notBlank(name, LectureTypeError.TYPE_IS_NULL.getMessage());
@@ -19,5 +33,4 @@ public enum LectureType {
             default -> throw new InvalidLectureTypeException(LectureTypeError.TYPE_NOT_FOUND);
         };
     }
-
 }
