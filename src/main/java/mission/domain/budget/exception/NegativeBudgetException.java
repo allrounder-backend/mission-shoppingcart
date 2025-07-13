@@ -1,4 +1,4 @@
-package mission.domain.cart.exception;
+package mission.domain.budget.exception;
 
 public class NegativeBudgetException extends BudgetException {
   public NegativeBudgetException() {

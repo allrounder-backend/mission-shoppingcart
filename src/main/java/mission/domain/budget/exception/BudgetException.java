@@ -1,4 +1,4 @@
-package mission.domain.cart.exception;
+package mission.domain.budget.exception;
 
 public class BudgetException extends IllegalArgumentException {
     public BudgetException(BudgetError error) {

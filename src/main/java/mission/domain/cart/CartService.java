@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import mission.domain.budget.BudgetPerType;
+import mission.domain.budget.TotalBudget;
 import mission.domain.lecture.Lecture;
 import mission.domain.lecture.LectureRepository;
 import mission.domain.lecture.LectureType;

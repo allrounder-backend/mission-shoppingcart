@@ -91,10 +91,11 @@ public class ApplicationTest extends TestEnvironment {
     @Test
     void 강의ID입력이_null이면_NULL_INPUT_예외메시지를_출력한다() {
         run(Arrays.asList(
-                "100000",
+                "300000",
                 "DevOps-100000,F/W-100000,CS-60000",
                 null
         ));
+
         assertTrue(output().contains(InputError.NULL_INPUT.getMessage()));
     }
 

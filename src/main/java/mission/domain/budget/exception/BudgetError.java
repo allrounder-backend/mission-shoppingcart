@@ -1,4 +1,4 @@
-package mission.domain.cart.exception;
+package mission.domain.budget.exception;
 
 public enum BudgetError {
     NEGATIVE("예산은 음수가 될 수 없습니다."),

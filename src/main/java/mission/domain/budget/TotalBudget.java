@@ -1,6 +1,6 @@
-package mission.domain.cart;
+package mission.domain.budget;
 
-import mission.domain.cart.exception.NegativeBudgetException;
+import mission.domain.budget.exception.NegativeBudgetException;
 
 public record TotalBudget(int value) {
     public TotalBudget {

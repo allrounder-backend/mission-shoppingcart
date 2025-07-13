@@ -2,10 +2,11 @@ package mission.controller.implement;
 
 import java.util.List;
 import mission.controller.Controller;
-import mission.domain.cart.TotalBudget;
+import mission.domain.budget.TotalBudget;
+import mission.domain.budget.utils.BudgetPerTypeParser;
 import mission.domain.cart.CartResultDto;
 import mission.domain.cart.CartService;
-import mission.domain.cart.BudgetPerType;
+import mission.domain.budget.BudgetPerType;
 import mission.ui.InputView;
 import mission.ui.OutputView;
 
@@ -26,7 +27,8 @@ public class CartController implements Controller {
             int budgetValue = inputView.inputTotalBudget();
             TotalBudget totalBudget = new TotalBudget(budgetValue);
 
-            BudgetPerType budgetPerType = new BudgetPerType(inputView.inputTypeBudgets(), budgetValue);
+            String typeBudgetInput = inputView.inputTypeBudgets();
+            BudgetPerType budgetPerType = BudgetPerTypeParser.parse(typeBudgetInput, totalBudget.value());
 
             List<Integer> lectureIds = inputView.inputLectureIds();
 
