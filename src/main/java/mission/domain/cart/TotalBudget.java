@@ -1,9 +1,11 @@
 package mission.domain.cart;
 
-public record CartBudget(int value) {
-    public CartBudget {
+import mission.domain.cart.exception.NegativeBudgetException;
+
+public record TotalBudget(int value) {
+    public TotalBudget {
         if (value < 0) {
-            throw new IllegalArgumentException("예산은 음수가 될 수 없습니다.");
+            throw new NegativeBudgetException();
         }
     }
 

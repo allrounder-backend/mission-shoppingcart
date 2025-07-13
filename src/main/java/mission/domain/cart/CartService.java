@@ -15,13 +15,13 @@ public class CartService {
         this.lectureRepository = lectureRepository;
     }
 
-    public CartResultDto processCart(CartBudget cartBudget, BudgetPerType budgetPerType, List<Integer> lectureIds) {
+    public CartResultDto processCart(TotalBudget totalBudget, BudgetPerType budgetPerType, List<Integer> lectureIds) {
         List<Lecture> lectures = lectureRepository.findByIds(lectureIds);
         Cart cart = new Cart(lectures);
 
         int totalPrice = cart.calculateTotalPrice();
-        boolean overTotal = cartBudget.isOver(totalPrice);
-        int excessTotalAmount = cartBudget.excessAmount(totalPrice);
+        boolean overTotal = totalBudget.isOver(totalPrice);
+        int excessTotalAmount = totalBudget.excessAmount(totalPrice);
 
         Map<LectureType, Integer> priceByType = lectures.stream()
                 .collect(Collectors.groupingBy(
