@@ -2,10 +2,7 @@ package mission;
 
 import api.Console;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 class Lecture{
     private int id;
@@ -27,6 +24,20 @@ class Lecture{
 
     public int getPrice(){
         return price;
+    }
+
+    public String getType() {
+        return type;
+    }
+}
+
+class TypeBudget{
+    String type;
+    int budget;
+
+    public TypeBudget(String type, int budget){
+        this.type = type;
+        this.budget = budget;
     }
 }
 
@@ -63,28 +74,78 @@ public class Application {
             throw new IllegalArgumentException("budget must be a positive number");
         }
 
+        //응용단계 추가
+        System.out.println("Enter your type budget");
+
+        String categorical = Console.readLine();
+
+        //항목별 입력을 ,기준으로 나누기
+        String [] tokens1 = categorical.split(",");
+
+        //,기준으로 나눈걸 -으로 type, price로 나눠서 TypeBudget List에 저장
+        List<TypeBudget> budgets = new ArrayList<>();
+        for(String token : tokens1){
+            String[] parts = token.split("-");
+            String type = parts[0];
+            int price = Integer.parseInt(parts[1]);
+            budgets.add(new TypeBudget(type, price));
+        }
+
+        //구입할 강의 목록 입력
         System.out.println("Enter your lecture list to buy");
 
         String input = Console.readLine();
-        String[] tokens = input.split(",");
-        int[] lectureList = new int[tokens.length];
+        String[] tokens2 = input.split(",");
+        int[] lectureList = new int[tokens2.length];
 
-        for (int i = 0; i < tokens.length; i++) {
-            lectureList[i] = Integer.parseInt(tokens[i].trim());
+        for (int i = 0; i < tokens2.length; i++) {
+            lectureList[i] = Integer.parseInt(tokens2[i].trim());
         }
 
+        //구입할 강의 목록에 대한 가격 합 구하기
         int total = 0;
         for(int i=0; i<lectureList.length; i++){
             total += getPricebyId(lectures, lectureList[i]);
+            for(TypeBudget bud : budgets){
+                if(Objects.equals(bud.type, getTypebyId(lectures, lectureList[i]))){
+                    bud.budget -= getPricebyId(lectures,lectureList[i]);
+                }
+            }
         }
 
-        if(total > budget){
-            System.out.println("over");
-            System.out.printf("%,dwon%n", (total - budget));
-        }
-        else
-            System.out.println("not over");
 
+        boolean isTotalOver = total > budget;
+
+        boolean isAnyTypeOver = false;
+        for (TypeBudget bud : budgets) {
+            if (bud.budget < 0) {
+                isAnyTypeOver = true;
+                break;
+            }
+        }
+
+
+        if (isTotalOver || isAnyTypeOver) {
+            System.out.println("budget over");
+        } else {
+            System.out.println("You can buy");
+        }
+
+
+        if (isTotalOver) {
+            System.out.println(" - Total budget : " + String.format("%,dwon over", (total - budget)));
+        } else {
+            System.out.println(" - Total budget : OK");
+        }
+
+
+        for (TypeBudget bud : budgets) {
+            if (bud.budget >= 0) {
+                System.out.println(" - " + bud.type + " : OK");
+            } else {
+                System.out.println(" - " + bud.type + " : " + String.format("%,dwon over", Math.abs(bud.budget)));
+            }
+        }
 
     }
 
@@ -92,6 +153,15 @@ public class Application {
         for(Lecture lec : lectures){
             if(lec.getId() == id){
                 return lec.getPrice();
+            }
+        }
+        throw new IllegalArgumentException("lecture with id " + id + " not found");
+    }
+
+    static String getTypebyId(List<Lecture> lectures, int id){
+        for(Lecture lec : lectures){
+            if(lec.getId() == id){
+                return lec.getType();
             }
         }
         throw new IllegalArgumentException("lecture with id " + id + " not found");
