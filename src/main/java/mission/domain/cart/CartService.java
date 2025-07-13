@@ -17,7 +17,11 @@ public class CartService {
         this.lectureRepository = lectureRepository;
     }
 
-    public CartResultDto processCart(TotalBudget totalBudget, BudgetPerType budgetPerType, List<Integer> lectureIds) {
+    public CartResultDto processCart(
+            TotalBudget totalBudget,
+            BudgetPerType budgetPerType,
+            List<Integer> lectureIds
+    ) {
         List<Lecture> lectures = lectureRepository.findByIds(lectureIds);
         Cart cart = new Cart(lectures);
 
@@ -25,23 +29,31 @@ public class CartService {
         boolean overTotal = totalBudget.isOver(totalPrice);
         int excessTotalAmount = totalBudget.excessAmount(totalPrice);
 
-        Map<LectureType, Integer> priceByType = lectures.stream()
+        Map<LectureType, Integer> priceByType = calculatePriceByType(lectures);
+        Map<LectureType, Integer> exceededTypes = calculateExceededTypes(budgetPerType, priceByType);
+        boolean overAny = overTotal || !exceededTypes.isEmpty();
+
+        return new CartResultDto(overAny, overTotal, excessTotalAmount, exceededTypes, budgetPerType);
+    }
+
+    private Map<LectureType, Integer> calculatePriceByType(List<Lecture> lectures) {
+        return lectures.stream()
                 .collect(Collectors.groupingBy(
                         Lecture::type,
                         Collectors.summingInt(Lecture::price)
                 ));
-
-        Map<LectureType, Integer> exceededTypes = new HashMap<>();
-        for (LectureType type : budgetPerType.types()) {
-            int used = priceByType.getOrDefault(type, 0);
-            int limit = budgetPerType.get(type).orElse(0);
-            if (used > limit) {
-                exceededTypes.put(type, used - limit);
-            }
-        }
-
-        boolean overAny = overTotal || !exceededTypes.isEmpty();
-        return new CartResultDto(overAny, overTotal, excessTotalAmount, exceededTypes, budgetPerType);
-
     }
+
+    private Map<LectureType, Integer> calculateExceededTypes(
+            BudgetPerType budgetPerType,
+            Map<LectureType, Integer> priceByType
+    ) {
+        return budgetPerType.types().stream()
+                .filter(type -> priceByType.getOrDefault(type, 0) > budgetPerType.get(type).orElse(0))
+                .collect(Collectors.toMap(
+                        type -> type,
+                        type -> priceByType.getOrDefault(type, 0) - budgetPerType.get(type).orElse(0)
+                ));
+    }
+
 }

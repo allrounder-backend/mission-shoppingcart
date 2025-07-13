@@ -27,20 +27,28 @@ public class CartController implements Controller {
             int budgetValue = inputView.inputTotalBudget();
             TotalBudget totalBudget = new TotalBudget(budgetValue);
 
-            String typeBudgetInput = inputView.inputTypeBudgets();
-            BudgetPerType budgetPerType = BudgetPerTypeParser.parse(typeBudgetInput, totalBudget.value());
+            BudgetPerType budgetPerType = receiveBudgetPerType(totalBudget);
 
             List<Integer> lectureIds = inputView.inputLectureIds();
 
             CartResultDto result = cartService.processCart(totalBudget, budgetPerType, lectureIds);
 
-            if (result.overBudget()) {
-                outputView.printOverBudget(result);
-            } else {
-                outputView.printWithinBudget(result);
-            }
+            printResult(result);
         } catch (IllegalArgumentException e) {
             outputView.printError(e);
+        }
+    }
+
+    private BudgetPerType receiveBudgetPerType(TotalBudget totalBudget) {
+        String typeBudgetInput = inputView.inputTypeBudgets();
+        return BudgetPerTypeParser.parse(typeBudgetInput, totalBudget.value());
+    }
+
+    private void printResult(CartResultDto result) {
+        if (result.overBudget()) {
+            outputView.printOverBudget(result);
+        } else {
+            outputView.printWithinBudget(result);
         }
     }
 
