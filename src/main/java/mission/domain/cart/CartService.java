@@ -11,12 +11,14 @@ public class CartService {
         this.lectureRepository = lectureRepository;
     }
 
-    public CartResultDto processCart(int budgetValue, List<Integer> lectureIds) {
-        CartBudget budget = new CartBudget(budgetValue);
+    public CartResultDto processCart(CartBudget cartBudget, List<Integer> lectureIds) {
         List<Lecture> lectures = lectureRepository.findByIds(lectureIds);
         Cart cart = new Cart(lectures);
         int totalPrice = cart.calculateTotalPrice();
 
-        return CartResultDto.of(budget, totalPrice);
+        boolean overBudget = cartBudget.isOver(totalPrice);
+        int excessAmount = overBudget ? cartBudget.excessAmount(totalPrice) : 0;
+
+        return new CartResultDto(overBudget, excessAmount);
     }
 }

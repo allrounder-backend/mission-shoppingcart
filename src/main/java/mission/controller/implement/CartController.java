@@ -2,6 +2,7 @@ package mission.controller.implement;
 
 import java.util.List;
 import mission.controller.Controller;
+import mission.domain.cart.CartBudget;
 import mission.domain.cart.CartResultDto;
 import mission.domain.cart.CartService;
 import mission.ui.InputView;
@@ -18,16 +19,23 @@ public class CartController implements Controller {
         this.outputView = outputView;
     }
 
+    @Override
     public void run() {
-        int budgetValue = inputView.inputTotalBudget();
-        List<Integer> lectureIds = inputView.inputLectureIds();
+        try {
+            int budgetValue = inputView.inputTotalBudget();
+            CartBudget cartBudget = new CartBudget(budgetValue);
+            List<Integer> lectureIds = inputView.inputLectureIds();
 
-        CartResultDto result = cartService.processCart(budgetValue, lectureIds);
+            CartResultDto result = cartService.processCart(cartBudget, lectureIds);
 
-        if (result.isOverBudget()) {
-            outputView.printOverBudget(result.excessAmount());
-        } else {
-            outputView.printWithinBudget();
+            if (result.isOverBudget()) {
+                outputView.printOverBudget(result.excessAmount());
+            } else {
+                outputView.printWithinBudget();
+            }
+        } catch (IllegalArgumentException e) {
+            outputView.printError(e);
         }
     }
+
 }

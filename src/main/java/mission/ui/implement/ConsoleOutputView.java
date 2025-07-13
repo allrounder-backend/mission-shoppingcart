@@ -13,4 +13,10 @@ public class ConsoleOutputView implements OutputView {
     public void printWithinBudget() {
         System.out.println("예산을 초과하지 않았습니다.");
     }
+
+    @Override
+    public void printError(Exception e) {
+        System.out.println(e.getClass().getSimpleName() + " : " + e.getMessage());
+    }
+
 }
