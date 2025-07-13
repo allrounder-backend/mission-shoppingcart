@@ -34,7 +34,7 @@ public class CartController implements Controller {
 
             CartResultDto result = cartService.processCart(totalBudget, budgetPerType, lectureIds);
 
-            if (result.isOverBudget()) {
+            if (result.overBudget()) {
                 outputView.printOverBudget(result);
             } else {
                 outputView.printWithinBudget(result);
