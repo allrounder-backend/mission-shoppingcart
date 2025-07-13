@@ -24,10 +24,14 @@ public class ConsoleOutputView implements OutputView {
         }
     }
 
-    @Override
-    public void printWithinBudget() {
+    public void printWithinBudget(CartResultDto result) {
         System.out.println("예산을 초과하지 않았습니다.");
+        System.out.println(" - 총 예산 : OK");
+        for (LectureType type : result.getBudgetPerType().types()) {
+            System.out.printf(" - %s : OK%n", type.displayName());
+        }
     }
+
 
     @Override
     public void printError(Exception e) {

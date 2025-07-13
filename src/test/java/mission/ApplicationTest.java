@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 public class ApplicationTest extends TestEnvironment {
 
+    // 기본미션
     @Test
     void 예산을_초과한_경우_출력한다() {
         run(List.of("250000", "1, 14, 17"));
@@ -55,6 +56,41 @@ public class ApplicationTest extends TestEnvironment {
         run(Arrays.asList(null, "1, 2, 3")); // 예산 입력이 null
 
         assertTrue(output().contains(InputError.NULL_INPUT.getMessage()));
+    }
+
+    // 응용미션
+
+    @Test
+    void 유형별_예산이_초과된_경우_출력한다() {
+        run(List.of(
+                "600000",
+                "DevOps-200000,F/W-250000,CS-100000",
+                "1, 3, 10, 11, 15, 16"
+        ));
+
+        assertTrue(output().contains("예산을 초과했습니다."));
+        assertTrue(output().contains("총 예산 : OK"));
+        assertTrue(output().contains("DevOps : OK"));
+        assertTrue(output().contains("F/W : OK"));
+        assertTrue(output().contains("CS : 21,000원 초과"));
+    }
+
+    @Test
+    void 모든_유형이_OK이면_OK로_출력한다() {
+        run(List.of(
+                "600000",
+                "DevOps-300000,F/W-200000,CS-100000",
+                "1, 2, 3"
+        ));
+
+        System.out.println("======= 출력 시작 =======");
+        System.out.println(output());
+        System.out.println("======= 출력 끝 =======");
+        assertTrue(output().contains("예산을 초과하지 않았습니다."));
+        assertTrue(output().contains("총 예산 : OK"));
+        assertTrue(output().contains("DevOps : OK"));
+        assertTrue(output().contains("F/W : OK"));
+        assertTrue(output().contains("CS : OK"));
     }
 
     @Override

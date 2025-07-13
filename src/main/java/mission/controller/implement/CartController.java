@@ -35,7 +35,7 @@ public class CartController implements Controller {
             if (result.isOverBudget()) {
                 outputView.printOverBudget(result);
             } else {
-                outputView.printWithinBudget();
+                outputView.printWithinBudget(result);
             }
         } catch (IllegalArgumentException e) {
             outputView.printError(e);

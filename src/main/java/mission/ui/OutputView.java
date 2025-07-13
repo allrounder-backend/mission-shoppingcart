@@ -4,6 +4,6 @@ import mission.domain.cart.CartResultDto;
 
 public interface OutputView {
     void printOverBudget(CartResultDto result);
-    void printWithinBudget();
+    void printWithinBudget(CartResultDto result);
     void printError(Exception e);
 }
