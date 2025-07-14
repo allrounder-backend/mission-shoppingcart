@@ -17,14 +17,6 @@ public class Lecture {
         return lectureID;
     }
 
-    public String getLectureName() {
-        return lectureName;
-    }
-
-    public String getLectureType() {
-        return lectureType;
-    }
-
     public int getLecturePrice() {
         return lecturePrice;
     }

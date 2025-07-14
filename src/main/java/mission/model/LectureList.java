@@ -26,10 +26,6 @@ public class LectureList {
         lectures.add(new Lecture(17, "외워서 끝내는 SSL과 최소한의 암호기술", "CS", 44000));
     }
 
-    public List<Lecture> getLectures() {
-        return lectures;
-    }
-
     public mission.model.Lecture findLectureByID(int id) {
         for (mission.model.Lecture lecture : lectures) {
             if (lecture.getLectureID() == id) {
