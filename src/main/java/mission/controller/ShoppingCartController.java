@@ -5,7 +5,7 @@ import mission.model.Lecture;
 import mission.model.LectureList;
 
 public class ShoppingCartController {
-    public void parseListId(List<Integer> id, String input) {
+    public static void parseListId(List<Integer> id, String input) {
         String[] tokens = input.replaceAll("\\s+", "").split(",");
         for (String token : tokens) {
             try {
@@ -16,20 +16,12 @@ public class ShoppingCartController {
         }
     }
 
-    public int price(List<Integer> shoppingListId, LectureList lectureList) {
+    public static int price(List<Integer> shoppingListId, LectureList lectureList) {
         int cost = 0;
         for (int id : shoppingListId) {
             Lecture lec = lectureList.findLectureByID(id);
             cost += lec.getLecturePrice();
         }
         return cost;
-    }
-
-    public void comparePrice(int budget, int price) {
-        if (budget >= price) {
-            System.out.print("예산을 초과하지 않았습니다.");
-        } else {
-            System.out.print("에산을 초과했습니다. 초과금액(" + (price - budget) + "원" + ")");
-        }
     }
 }
