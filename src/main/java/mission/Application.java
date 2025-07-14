@@ -144,7 +144,6 @@ public class Application {
         System.out.println("유형 별 예산을 입력해 주세요.");
         basket.setBudget(Console.readLine().split(","));
         System.out.println("구입할 강의 목록을 입력해주세요.");
-        // FIXME: ", "로 할 경우 split이 제대로 작동하지 않음...
         basket.categorize(Console.readLine().split(", "));
         for (int i = 0; i < 5; basket.getPromotion(i++));
         basket.setTotalPrice();
