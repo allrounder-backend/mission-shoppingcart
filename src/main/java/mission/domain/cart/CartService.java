@@ -1,6 +1,6 @@
 package mission.domain.cart;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -9,6 +9,8 @@ import mission.domain.budget.TotalBudget;
 import mission.domain.lecture.Lecture;
 import mission.domain.lecture.LectureRepository;
 import mission.domain.lecture.LectureType;
+import mission.domain.promotion.PromotionPolicy;
+import mission.domain.promotion.PromotionPolicyFactory;
 
 public class CartService {
     private final LectureRepository lectureRepository;
@@ -23,26 +25,33 @@ public class CartService {
             List<Integer> lectureIds
     ) {
         List<Lecture> lectures = lectureRepository.findByIds(lectureIds);
-        Cart cart = new Cart(lectures);
+        Map<LectureType, List<Lecture>> lecturesByType = lectures.stream()
+                .collect(Collectors.groupingBy(Lecture::type));
 
-        int totalPrice = cart.calculateTotalPrice();
-        boolean overTotal = totalBudget.isOver(totalPrice);
-        int excessTotalAmount = totalBudget.excessAmount(totalPrice);
+        Map<LectureType, Integer> discountedPriceByType = applyPromotionByType(lecturesByType);
+        int totalDiscountedPrice = discountedPriceByType.values().stream().mapToInt(Integer::intValue).sum();
+        boolean overTotal = totalBudget.isOver(totalDiscountedPrice);
+        int excessTotalAmount = totalBudget.excessAmount(totalDiscountedPrice);
 
-        Map<LectureType, Integer> priceByType = calculatePriceByType(lectures);
-        Map<LectureType, Integer> exceededTypes = calculateExceededTypes(budgetPerType, priceByType);
+
+        Map<LectureType, Integer> exceededTypes = calculateExceededTypes(budgetPerType, discountedPriceByType);
         boolean overAny = overTotal || !exceededTypes.isEmpty();
 
         return new CartResultDto(overAny, overTotal, excessTotalAmount, exceededTypes, budgetPerType);
     }
 
-    private Map<LectureType, Integer> calculatePriceByType(List<Lecture> lectures) {
-        return lectures.stream()
-                .collect(Collectors.groupingBy(
-                        Lecture::type,
-                        Collectors.summingInt(Lecture::price)
-                ));
+    private Map<LectureType, Integer> applyPromotionByType(Map<LectureType, List<Lecture>> lecturesByType) {
+        Map<LectureType, Integer> result = new EnumMap<>(LectureType.class);
+
+        for (Map.Entry<LectureType, List<Lecture>> entry : lecturesByType.entrySet()) {
+            PromotionPolicy policy = PromotionPolicyFactory.getPolicy(entry.getKey());
+            int discountedPrice = policy.apply(entry.getValue());
+            result.put(entry.getKey(), discountedPrice);
+        }
+
+        return result;
     }
+
 
     private Map<LectureType, Integer> calculateExceededTypes(
             BudgetPerType budgetPerType,

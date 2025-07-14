@@ -19,7 +19,7 @@ public class ApplicationTest extends TestEnvironment {
         ));
 
         assertTrue(output().contains("예산을 초과했습니다."));
-        assertTrue(output().contains("총 예산 : 177,900원 초과"));
+        assertTrue(output().contains("총 예산 : 160,200원 초과"));
         assertTrue(output().contains("DevOps : OK"));
         assertTrue(output().contains("F/W : OK"));
         assertTrue(output().contains("CS : 126,000원 초과"));
