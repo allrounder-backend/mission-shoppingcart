@@ -88,6 +88,10 @@ class Basket {
                                 price[3] += lecture.getPrice();
                             }
                         }
+                    } else {
+                        for (Lecture lecture : lectures[2]) {
+                            if (lecture != null) price[3] += lecture.getPrice();
+                        }
                     }
                 }
             }
