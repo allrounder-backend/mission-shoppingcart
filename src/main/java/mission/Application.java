@@ -102,18 +102,83 @@ public class Application {
             lectureList[i] = Integer.parseInt(tokens2[i].trim());
         }
 
-        //구입할 강의 목록에 대한 가격 합 구하기
-        int total = 0;
-        for(int i=0; i<lectureList.length; i++){
-            total += getPricebyId(lectures, lectureList[i]);
-            for(TypeBudget bud : budgets){
-                if(Objects.equals(bud.type, getTypebyId(lectures, lectureList[i]))){
-                    bud.budget -= getPricebyId(lectures,lectureList[i]);
+        //프로모션 적용가로 바꾸기
+        Map<String, Integer> typeCount = new HashMap<>();
+        Map<String, Integer> typeSum = new HashMap<>();
+
+        for(int i=0; i<lectureList.length; i++) {
+            String type = getTypebyId(lectures, lectureList[i]);
+            int price = getPricebyId(lectures, lectureList[i]);
+
+            typeCount.put(type, typeCount.getOrDefault(type, 0) + 1);
+            typeSum.put(type, typeSum.getOrDefault(type, 0) + price);
+        }
+
+        if (typeCount.containsKey("DevOps")) {
+            int total = typeSum.get("DevOps");
+            total = (int) (total * 0.9);
+            typeSum.put("DevOps", total);
+        }
+
+        if (typeCount.containsKey("DBMS")) {
+            int count = typeCount.get("DBMS");
+            int total = typeSum.get("DBMS");
+            total -= 5000 * count;
+            typeSum.put("DBMS", total);
+        }
+
+        if(typeCount.containsKey("Lang")){
+            int count = typeCount.get("Lang");
+
+            if(count >= 2){
+                int minimumPrice = Integer.MAX_VALUE;
+
+                for(int i=0; i<lectureList.length; i++){
+                    if(getTypebyId(lectures, lectureList[i]).equals("Lang")){
+                        int price = getPricebyId(lectures, lectureList[i]);
+                        if(price < minimumPrice){
+                            minimumPrice = price;
+                        }
+                    }
                 }
+
+                int langTotal = typeSum.get("Lang") - minimumPrice;
+                typeSum.put("Lang", langTotal);
+            }
+        }
+
+        if(typeCount.containsKey("F/W")){
+            int total = typeSum.get("F/W");
+            if(total >= 90000){
+                int promotedPrice = total - 30000;
+                typeSum.put("F/W", promotedPrice);
+            }
+        }
+
+        if(typeCount.containsKey("CS")){
+            int count = typeCount.get("CS");
+            if(count >= 3) {
+                int promotedPrice = (int) (typeSum.get("CS") * 0.7);
+                typeSum.put("CS", promotedPrice);
             }
         }
 
 
+
+
+
+        // 할인 적용된 구매금액으로 전체 금액 적용
+        int total = 0;
+        for (TypeBudget bud : budgets) {
+            if (typeSum.containsKey(bud.type)) {
+                int spend = typeSum.get(bud.type);
+                bud.budget -= spend;
+                total += spend;
+            }
+        }
+
+
+        //유형별이랑 합계 예산 넘었는지 확인하기
         boolean isTotalOver = total > budget;
 
         boolean isAnyTypeOver = false;

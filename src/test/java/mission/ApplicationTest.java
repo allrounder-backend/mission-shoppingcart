@@ -16,7 +16,7 @@ public class ApplicationTest extends TestEnvironment {
     }
      */
 
-    @Test
+    /*@Test
     void testApplication() {
         run(List.of(
                 "500000",
@@ -29,6 +29,27 @@ public class ApplicationTest extends TestEnvironment {
         assertTrue(output().contains("DevOps : OK"));
         assertTrue(output().contains("F/W : OK"));
         assertTrue(output().contains("CS :"));
+    }
+     */
+
+
+    @Test
+    void testApplicationWithPromotion() {
+        run(List.of(
+                "400000",
+                "DevOps-50000,DBMS-50000,F/W-50000,CS-50000",
+                "1, 6, 11, 12, 14, 15, 16"
+        ));
+
+
+        String out = output();
+
+        assertTrue(out.contains("budget over"), "Expected 'budget over' message");
+        assertTrue(out.contains(" - Total budget : OK"), "Expected 'Total budget : OK'");
+        assertTrue(out.contains(" - DevOps : 19,300won over"), "Expected 'DevOps : 19,300won over'");
+        assertTrue(out.contains(" - DBMS : OK"), "Expected 'DBMS : OK'");
+        assertTrue(out.contains(" - F/W : 76,200won over"), "Expected 'F/W : 76,200won over'");
+        assertTrue(out.contains(" - CS : 127,100won over"), "Expected 'CS : 200won over'");
     }
 
 
