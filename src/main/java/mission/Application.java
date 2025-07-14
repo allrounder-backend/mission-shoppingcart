@@ -36,7 +36,6 @@ class Basket {
     public void categorize(String[] id) {
         for (String s : id) {
             try {
-                s = s.trim();
                 // 강의 ID로 Lecture enum을 찾습니다.
                 for (Lecture l : Lecture.values()) {
                     if (l.getId().equals(s)) {
@@ -142,7 +141,7 @@ public class Application {
         basket.setBudget(Console.readLine().split(","));
         System.out.println("구입할 강의 목록을 입력해주세요.");
         // FIXME: ", "로 할 경우 split이 제대로 작동하지 않음...
-        basket.categorize(Console.readLine().split(","));
+        basket.categorize(Console.readLine().split(", "));
         for (int i = 0; i < 5; basket.getPromotion(i++));
         basket.setTotalPrice();
         int[] temp = new int[6];
